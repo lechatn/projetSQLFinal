@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	//"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -23,6 +23,33 @@ type employes struct {
 	IdPost string
 	Salary int
 }
+
+type departement struct {
+	IdDepartement string
+	Name string
+}
+
+type post struct {
+	IdPost string
+	Name string
+}
+
+type project struct {
+	IdProject string
+	Name string
+	Responsable string
+}
+
+type employes_project struct {
+	IdEmployes string
+	IdProject string
+}
+
+type hierarchy struct {
+	IdEmployes string
+	IdSuperior string
+}
+
 
 func main() {
 	http.HandleFunc("/", HomeHandler)
@@ -62,8 +89,6 @@ func HomeHandler (w http.ResponseWriter, r *http.Request) {
 
 		employesList = append(employesList, employe)
 	}
-
-	fmt.Println(employesList)
 
 	errExecute := tmpl.Execute(w, employesList)
 	if errExecute != nil {
