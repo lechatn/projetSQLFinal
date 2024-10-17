@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYAT</title>
+</head>
+<body>
+    <h1>Voici les employés de l'entreprise :</h1>
+
+    {{range .}}
+        <div>
+            <h2>Id Employé : {{.IdEmployes}}</h2>
+            <p>Nom : {{.Name}}</p>
+            <p>Prénom : {{.Firstname}}</p>
+            <p>Date de naissance : {{.Birthdate}}</p>
+            <p>Email : {{.Mail}}</p>
+            <p>Ville : {{.City}}</p>
+            <p>ID Département : {{.IdDepartement}}</p>
+            <p>ID Poste : {{.IdPost}}</p>
+            <p>Salaire : {{.Salary}}</p>
+        </div>
+    {{end}}
+
+</body>
+</html>
