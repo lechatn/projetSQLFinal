@@ -1,13 +1,11 @@
-package main
+package sqlproject
 
 import (
 	"context"
-	"database/sql"
-	//"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	_ "github.com/mattn/go-sqlite3"
+	"database/sql"
 )
 
 var db *sql.DB
@@ -50,14 +48,6 @@ type hierarchy struct {
 	IdSuperior string
 }
 
-
-func main() {
-	http.HandleFunc("/", HomeHandler)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	log.Println("Server is listening on port 8080")
-	http.ListenAndServe(":8080", nil)
-}
-
 func HomeHandler (w http.ResponseWriter, r *http.Request) {
 	db = OpenDb()
 	tmpl, errReading1 := template.ParseFiles("templates/index.html")
@@ -79,6 +69,7 @@ func HomeHandler (w http.ResponseWriter, r *http.Request) {
 
 	var employesList []employes
 
+
 	for rows.Next() {
 		var employe employes
 		errScan := rows.Scan(&employe.IdEmployes, &employe.Name, &employe.Firstname, &employe.Birthdate, &employe.Mail, &employe.City, &employe.IdDepartement, &employe.IdPost, &employe.Salary)
@@ -86,6 +77,7 @@ func HomeHandler (w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error with employes table", http.StatusInternalServerError)
 			return
 		}
+		employe.Birthdate = employe.Birthdate[:10]
 
 		employesList = append(employesList, employe)
 	}
@@ -98,12 +90,14 @@ func HomeHandler (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func OpenDb() *sql.DB { // Function to open the database
-	dbPath := "data.db"
-	db, errOpenBDD := sql.Open("sqlite3", dbPath)
-	if errOpenBDD != nil {
-		log.Fatal(errOpenBDD)
-	}
-	return db
-}
+
+func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {}
+
+func AddEmployeHandler (w http.ResponseWriter, r *http.Request) {}
+
+func RemoveEmployeHandler (w http.ResponseWriter, r *http.Request) {}
+
+func EditEmployeHandler (w http.ResponseWriter, r *http.Request) {}
+
+func AllProjectsHandler (w http.ResponseWriter, r *http.Request) {}
 

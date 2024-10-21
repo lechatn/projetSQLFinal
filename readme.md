@@ -49,3 +49,22 @@ Ref : employes_project.idProject > projet.idProject
 Ref : projet.responsable > employes.idEmployes
 Ref : hierarchy.idEmploye > employes.idEmployes
 Ref : hierarchy.idManager > employes.idEmployes
+
+
+
+<div class="content">
+        {{range .}}
+            <div>
+                <h2>Id Employé : {{.IdEmployes}}</h2>
+                <p>Nom : {{.Name}}</p>
+                <p>Prénom : {{.Firstname}}</p>
+                <p>Date de naissance : {{.Birthdate}}</p>
+                <p>Email : {{.Mail}}</p>
+                <p>Ville : {{.City}}</p>
+                <p>ID Département : {{.IdDepartement}}</p>
+                <p>ID Poste : {{.IdPost}}</p>
+                <p>Salaire : {{.Salary}}</p>
+            </div>
+        {{end}}
+    </div>
+    <h1>Voici les employés de l'entreprise :</h1>
