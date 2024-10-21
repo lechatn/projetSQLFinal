@@ -49,16 +49,33 @@ type hierarchy struct {
 }
 
 func HomeHandler (w http.ResponseWriter, r *http.Request) {
-	db = OpenDb()
 	tmpl, errReading1 := template.ParseFiles("templates/index.html")
 	if errReading1 != nil {
 		http.Error(w, "Error reading the HTML file : index.html", http.StatusInternalServerError)
 		return
 	}
 
-	rows, errQuery19 := db.QueryContext(context.Background(), "SELECT * from employes") // Get the profile picture
+	errExecute := tmpl.Execute(w, nil)
+	if errExecute != nil {
+		log.Printf("Error executing template: %v", errExecute)
+		http.Error(w, "Error executing the HTML file : index.html", http.StatusInternalServerError)
+		return
+	}
+}
 
-	if errQuery19 != nil {
+
+func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
+
+	tmpl, errReading2 := template.ParseFiles("templates/allEmployes.html")
+	if errReading2 != nil {
+		http.Error(w, "Error reading the HTML file : allEmployes.html", http.StatusInternalServerError)
+		return
+	}
+
+	rows, errQuery2 := db.QueryContext(context.Background(), "SELECT * from employes") // Get the profile picture
+
+	if errQuery2 != nil {
 		http.Error(w, "Error with employes table", http.StatusInternalServerError)
 		return
 	}
@@ -88,10 +105,8 @@ func HomeHandler (w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error executing the HTML file : index.html", http.StatusInternalServerError)
 		return
 	}
+
 }
-
-
-func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {}
 
 func AddEmployeHandler (w http.ResponseWriter, r *http.Request) {}
 
