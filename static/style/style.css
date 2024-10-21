@@ -54,15 +54,14 @@ body {
     margin-top: 5%;
     margin-left: 2%;
 }
-
 /* Conteneur de la carte */
 .card {
     width: 300px;
     height: 300px;
     margin-top: 20px;
-  }
-  
-  .card-inner {
+}
+
+.card-inner {
     position: relative;
     width: 100%;
     height: 100%;
@@ -70,20 +69,21 @@ body {
     transform-style: preserve-3d;
     cursor: pointer;
     transform-origin: center; /* Assure que la rotation se fait au centre de la carte */
-  }
-  
-  .card:hover .card-inner {
-    transform: rotateY(180deg); /* Fait pivoter la carte */
-  }
-  
-  /* Faces avant et arrière de la carte */
-  .card-front, .card-back {
+}
+
+/* La classe flipped sera ajoutée via JavaScript */
+.card.flipped .card-inner {
+    transform: rotateY(180deg); /* Fait pivoter la carte lorsqu'elle est cliquée */
+}
+
+/* Faces avant et arrière de la carte */
+.card-front, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden; /* Masque l'arrière lorsque la carte tourne */
     display: flex;
-    flex-direction: column; /* Aligne les éléments verticalement */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-family: Arial, sans-serif;
@@ -95,8 +95,8 @@ body {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
-  }
-  
-  .card-back {
+}
+
+.card-back {
     transform: rotateY(180deg); /* Affiche la face arrière */
-  }
+}
