@@ -21,6 +21,8 @@ type employes struct {
 	IdDepartement string
 	IdPost string
 	Salary int
+	DepartementName string
+	PostName string
 }
 
 type departement struct {
@@ -80,10 +82,16 @@ func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, errQuery2 := db.QueryContext(context.Background(), "SELECT * from employes") // Get the profile picture
+	rows, errQuery2 := db.QueryContext(context.Background(), `
+        SELECT employes.*, departement.name, post.name
+		FROM employes
+		JOIN departement ON employes.idDepartement = departement.idDepartement
+		JOIN post ON employes.idPost = post.idPost
+    `)
 
 	if errQuery2 != nil {
 		http.Error(w, "Error with employes table", http.StatusInternalServerError)
+		log.Printf("Error with employes table in query: %v", errQuery2)
 		return
 	}
 
@@ -96,9 +104,10 @@ func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var employe employes
-		errScan := rows.Scan(&employe.IdEmployes, &employe.Name, &employe.Firstname, &employe.Birthdate, &employe.Mail, &employe.City, &employe.IdDepartement, &employe.IdPost, &employe.Salary)
+		errScan := rows.Scan(&employe.IdEmployes, &employe.Name, &employe.Firstname, &employe.Birthdate, &employe.Mail, &employe.City, &employe.IdDepartement, &employe.IdPost, &employe.Salary, &employe.DepartementName, &employe.PostName)
 		if errScan != nil {
 			http.Error(w, "Error with employes table", http.StatusInternalServerError)
+			log.Printf("Error scanning employes table: %v", errScan)
 			return
 		}
 		employe.Birthdate = employe.Birthdate[:10]
