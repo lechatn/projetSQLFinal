@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style/style.css">
+    <link rel="icon" href="../static/image/entreprise.png" type="image/png">
+    <title>GYAT</title>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Accueil</a>
+        <a href="allemployes">Tout les employés</a>
+        <a href="addemploye">Ajouter un employé</a>
+        <a href="removeemploye">Supprimer un employé</a>
+        <a href="editemploye">Modifier un employé</a>
+        <a href="allprojects">Tout les projets</a>
+    </div>
+    <div class="formulaire">
+        <form action="/submitemploye" method="POST">
+            <label for="name">Nom :</label>
+            <input type="text" id="name" name="name" required>
+            <label for="firstname">Prénom :</label>
+            <input type="text" id="firstname" name="firstname" required>
+            <label for="birthdate">Date de naissance :</label>
+            <input type="date" id="birthdate" name="birthdate" required>
+            <label for="mail">Email :</label>
+            <input type="email" id="mail" name="mail" required>
+            <label for="city">Ville :</label>
+            <input type="text" id="city" name="city" required>
+            <label for="departement">Département :</label>
+            <select id="departement" name="departement" required>
+                {{range .DepartementList}}
+                    <option value="{{.IdDepartement}}">{{.IdDepartement}}- {{.Name}}</option>
+                {{end}}
+            </select>
+            <label for="post">Poste :</label>
+            <select id="post" name="post" required>
+                {{range .PostList}}
+                    <option value="{{.IdPost}}">{{.IdPost}}- {{.Name}}</option>
+                {{end}}
+            </select>
+            <label for="salary">Salaire :</label>
+            <input type="number" id="salary" name="salary" required>
+            <input type="submit" value="Ajouter">
+        </form> 
+    </div>
+</body>
+</html>

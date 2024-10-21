@@ -2,10 +2,11 @@ package sqlproject
 
 import (
 	"context"
+	"database/sql"
+		//"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"database/sql"
 )
 
 var db *sql.DB
@@ -46,6 +47,12 @@ type employes_project struct {
 type hierarchy struct {
 	IdEmployes string
 	IdSuperior string
+}
+
+type addEmploye struct {
+	DepartementList []departement
+	PostList []post
+	Sucess bool
 }
 
 func HomeHandler (w http.ResponseWriter, r *http.Request) {
@@ -108,7 +115,117 @@ func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AddEmployeHandler (w http.ResponseWriter, r *http.Request) {}
+func AddEmployeHandler (w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
+	tmpl, errReading3 := template.ParseFiles("templates/addEmploye.html")
+	if errReading3 != nil {
+		http.Error(w, "Error reading the HTML file : addEmploye.html", http.StatusInternalServerError)
+		return
+	}
+
+	rows4, errQuery4 := db.QueryContext(context.Background(), "SELECT * from departement")
+
+	if errQuery4 != nil {
+		http.Error(w, "Error with departement table in query", http.StatusInternalServerError)
+		return
+	}
+
+	if rows4 != nil {
+		defer rows4.Close()
+	}
+
+	var departementList []departement
+
+	for rows4.Next() {
+		var depart departement
+		errScan := rows4.Scan(&depart.IdDepartement, &depart.Name)
+		if errScan != nil {
+			http.Error(w, "Error with departement table", http.StatusInternalServerError)
+			return
+		}
+
+		departementList = append(departementList, depart)
+	}
+
+	rows5, errQuery5 := db.QueryContext(context.Background(), "SELECT * from post")
+
+	if errQuery5 != nil {
+		http.Error(w, "Error with post table in query", http.StatusInternalServerError)
+		return
+	}
+
+	if rows5 != nil {
+		defer rows5.Close()
+	}
+
+	var postList []post
+
+	for rows5.Next() {
+		var post post
+		errScan := rows5.Scan(&post.IdPost, &post.Name)
+		if errScan != nil {
+			http.Error(w, "Error with post table", http.StatusInternalServerError)
+			return
+		}
+
+		postList = append(postList, post)
+
+	}
+
+	var addemployes addEmploye
+
+	addemployes.DepartementList = departementList
+	addemployes.PostList = postList
+
+
+
+	errExecute := tmpl.Execute(w, addemployes)
+	if errExecute != nil {
+		log.Printf("Error executing template: %v", errExecute)
+		http.Error(w, "Error executing the HTML file : addEmploye.html", http.StatusInternalServerError)
+		return
+	}
+}
+
+func SubmitEmployeHandler (w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
+	// Get the form values
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	errParse := r.ParseForm()
+
+	if errParse != nil {
+		http.Error(w, "Error parsing the form", http.StatusInternalServerError)
+		return
+	}
+
+	name := r.FormValue("name")
+	firstname := r.FormValue("firstname")
+	birthdate := r.FormValue("birthdate")
+	mail := r.FormValue("mail")
+	city := r.FormValue("city")
+	idDepartement := r.FormValue("departement")
+	idPost := r.FormValue("post")
+	salary := r.FormValue("salary")
+
+	idPost = idPost[:1]
+	idDepartement = idDepartement[:1]
+
+	_, errExec := db.ExecContext(context.Background(), "INSERT INTO employes (name, firstname, birthdate, mail, city, idDepartement, idPost, salary) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", name, firstname, birthdate, mail, city, idDepartement, idPost, salary)
+
+	if errExec != nil {
+		http.Error(w, "Error inserting into employes table", http.StatusInternalServerError)
+		return
+	}
+
+
+
+	http.Redirect(w, r, "/addemploye", http.StatusSeeOther)
+}
+
 
 func RemoveEmployeHandler (w http.ResponseWriter, r *http.Request) {}
 
