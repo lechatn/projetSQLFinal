@@ -22,17 +22,19 @@
         <div class="card">
             <div class="card-inner">
                 <div class="card-front">
-                    <img src="../static/image/personne.png" alt="Employe">
+                    <img src="../static/image/projet.png" alt="Employe">
                     <h2>{{.Name}}</h2>
                 </div>
                 <div class="card-back">
-                    <h4>Chef de projet : {{.Responsable}}<h4>
-                    <h5>Membres du projet : </h5>
-                    {{range $Members}}
-                        {{if eq .IdProject $projectId}}
-                            <p>{{.MemberName}}</p>
+                    <div class="card-back-content">
+                        <h4>Chef de projet : {{.Responsable}}<h4>
+                        <h5>Membres du projet : </h5>
+                        {{range $Members}}
+                            {{if eq .IdProject $projectId}}
+                                <p>{{.MemberName}}</p>
+                            {{end}}
                         {{end}}
-                    {{end}}
+                    </div>
                 </div>
             </div>
         </div>
