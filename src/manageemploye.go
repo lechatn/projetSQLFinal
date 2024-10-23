@@ -25,6 +25,7 @@ func RemoveHandler(w http.ResponseWriter, r *http.Request) {
 
 	IdEmployes := r.FormValue("idremove")
 
+	// Delete employe
 	_, errExec := db.ExecContext(context.Background(), "DELETE FROM employes WHERE idEmployes = ?", IdEmployes)
 	
 	if errExec != nil {
@@ -64,7 +65,7 @@ func EditHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	IdEmployes := r.FormValue("idedit")
-
+	// Delete employe
 	_, errExec := db.ExecContext(context.Background(), "DELETE FROM employes WHERE idEmployes = ?", IdEmployes)
 	
 	if errExec != nil {

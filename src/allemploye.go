@@ -15,7 +15,7 @@ func AllEmployesHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error reading the HTML file : allEmployes.html", http.StatusInternalServerError)
 		return
 	}
-
+	//Get all employes with their departement name and post name
 	rows, errQuery2 := db.QueryContext(context.Background(), `
         SELECT employes.*, departement.name, post.name
 		FROM employes

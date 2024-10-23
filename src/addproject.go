@@ -27,14 +27,14 @@ func AddProjectHandler (w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(responsable)
 	fmt.Println(members)
-
+	// Insert into project table the new project
 	_, errExec := db.ExecContext(context.Background(), "INSERT INTO project (name, responsable) VALUES (?, ?)", name, responsable)
 
 	if errExec != nil {
 		http.Error(w, "Error inserting into project table", http.StatusInternalServerError)
 		return
 	}
-
+	// Get the idProject of the new project
 	rows6, errQuery6 := db.QueryContext(context.Background(), `SELECT idProject FROM project WHERE name = ?`, name)
 
 	if errQuery6 != nil {
@@ -56,7 +56,7 @@ func AddProjectHandler (w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-
+	// Insert into employes_project table the members of the new project
 	for _, member := range members {
 		_, errExec2 := db.ExecContext(context.Background(), "INSERT INTO employes_project VALUES (?, ?)", member, idProject)
 

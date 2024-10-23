@@ -36,13 +36,14 @@ func SubmitEmployeHandler(w http.ResponseWriter, r *http.Request) {
 	idPost = idPost[:1]
 	idDepartement = idDepartement[:1]
 
+	//Insert new employe into employes table
 	_, errExec := db.ExecContext(context.Background(), "INSERT INTO employes (name, firstname, birthdate, mail, city, idDepartement, idPost, salary) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", name, firstname, birthdate, mail, city, idDepartement, idPost, salary)
 
 	if errExec != nil {
 		http.Error(w, "Error inserting into employes table", http.StatusInternalServerError)
 		return
 	}
-
+	//Get the idEmployes of the new employe
 	rows6, errQuery6 := db.QueryContext(context.Background(), `SELECT idEmployes FROM employes WHERE name = ? AND firstname = ?`, name, firstname)
 
 	if errQuery6 != nil {
@@ -64,14 +65,14 @@ func SubmitEmployeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-
+	//Insert the new employe into hierarchy table with his superior
 	_, errExec2 := db.ExecContext(context.Background(), "INSERT INTO hierarchy (idEmployes, idSuperior) VALUES (?, ?)", idEmployes, superior)
 
 	if errExec2 != nil {
 		http.Error(w, "Error inserting into hierarchy table", http.StatusInternalServerError)
 		return
 	}
-
+	//Insert the new employe into employes_project table with his project
 	_, errExec3 := db.ExecContext(context.Background(), "INSERT INTO employes_project VALUES (?, ?)", idEmployes, project)
 
 	if errExec3 != nil {
@@ -90,7 +91,7 @@ func AddEmployeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error reading the HTML file : addEmploye.html", http.StatusInternalServerError)
 		return
 	}
-
+	//Get all the data from the table departement
 	rows4, errQuery4 := db.QueryContext(context.Background(), "SELECT * from departement")
 
 	if errQuery4 != nil {
@@ -114,7 +115,7 @@ func AddEmployeHandler(w http.ResponseWriter, r *http.Request) {
 
 		departementList = append(departementList, depart)
 	}
-
+	//Get all the data from the table post
 	rows5, errQuery5 := db.QueryContext(context.Background(), "SELECT * from post")
 
 	if errQuery5 != nil {
@@ -139,7 +140,7 @@ func AddEmployeHandler(w http.ResponseWriter, r *http.Request) {
 		postList = append(postList, post)
 
 	}
-
+	//Get some data from the table employes
 	rows6, errQuery6 := db.QueryContext(context.Background(), `SELECT idEmployes, name, firstname FROM employes`)
 
 	if errQuery6 != nil {
@@ -165,7 +166,7 @@ func AddEmployeHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-
+	//Get some data from the table project
 	rows7, errQuery7 := db.QueryContext(context.Background(), `SELECT idProject, name FROM project`)
 
 	if errQuery7 != nil {

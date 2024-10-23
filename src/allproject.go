@@ -15,7 +15,7 @@ func AllProjectsHandler (w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error reading the HTML file : allProjects.html", http.StatusInternalServerError)
 		return
 	}
-
+    //Get all data of projects and their responsable name
 	rows, errQuery2 := db.QueryContext(context.Background(),
 		 `SELECT project.idProject, project.name, employes.name || ' ' || employes.firstname AS responsable
 		 FROM project
@@ -47,7 +47,7 @@ func AllProjectsHandler (w http.ResponseWriter, r *http.Request) {
 
 	}
 
-
+	//Get all data of employes_project and their member name 
 	rows2, errQuery3 := db.QueryContext(context.Background(),
 	 `SELECT employes_project.*, employes.name || ' ' || employes.firstname AS member
 	 FROM employes_project
@@ -79,7 +79,7 @@ func AllProjectsHandler (w http.ResponseWriter, r *http.Request) {
 		membersList = append(membersList, member)
 
 	}
-
+	//Get some data of employes
 	rows3, errQuery4 := db.QueryContext(context.Background(), `SELECT name, firstname, idEmployes FROM employes`)
 
 	if errQuery4 != nil {
