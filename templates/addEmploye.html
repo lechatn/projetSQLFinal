@@ -40,8 +40,20 @@
                     <option value="{{.IdPost}}">{{.IdPost}}- {{.Name}}</option>
                 {{end}}
             </select>
+            <label for="superior">Sélectionnez le supérieur</label>
+            <select id="superior" name="superior" required>
+                {{range .EmployeList}}
+                    <option value="{{.IdEmployes}}">{{.IdEmployes}}- {{.Firstname}} {{.Name}}</option>
+                {{end}}
+            </select>
             <label for="salary">Salaire :</label>
             <input type="number" id="salary" name="salary" required>
+            <label for="project">Sélectionnez le projet auquel l'employé appartient</label>
+            <select name="project" id="project">
+                {{range .ProjectList}}
+                    <option value="{{.IdProject}}">{{.IdProject}}- {{.Name}}</option>
+                {{end}}
+            </select>
             <input type="submit" value="Ajouter">
         </form> 
     </div>
