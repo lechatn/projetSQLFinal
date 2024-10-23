@@ -3,7 +3,8 @@ package sqlproject
 import (
 	"context"
 	"database/sql"
-		//"fmt"
+
+	//"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,36 +13,36 @@ import (
 var db *sql.DB
 
 type employes struct {
-	IdEmployes string
-	Name string
-	Firstname string
-	Birthdate string
-	Mail string
-	City string
+	IdEmployes    string
+	Name          string
+	Firstname     string
+	Birthdate     string
+	Mail          string
+	City          string
 	IdDepartement string
-	IdPost string
-	Salary int
+	IdPost        string
+	Salary        int
 }
 
 type departement struct {
 	IdDepartement string
-	Name string
+	Name          string
 }
 
 type post struct {
 	IdPost string
-	Name string
+	Name   string
 }
 
 type project struct {
-	IdProject string
-	Name string
+	IdProject   string
+	Name        string
 	Responsable string
 }
 
 type employes_project struct {
 	IdEmployes string
-	IdProject string
+	IdProject  string
 }
 
 type hierarchy struct {
@@ -51,11 +52,11 @@ type hierarchy struct {
 
 type addEmploye struct {
 	DepartementList []departement
-	PostList []post
-	Sucess bool
+	PostList        []post
+	Sucess          bool
 }
 
-func HomeHandler (w http.ResponseWriter, r *http.Request) {
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, errReading1 := template.ParseFiles("templates/index.html")
 	if errReading1 != nil {
 		http.Error(w, "Error reading the HTML file : index.html", http.StatusInternalServerError)
@@ -70,8 +71,49 @@ func HomeHandler (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func RemoveEmployeHandler(w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
 
-func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {
+	tmpl, errReading2 := template.ParseFiles("templates/removeEmploye.html")
+	if errReading2 != nil {
+		http.Error(w, "Error reading the HTML file : removeEmploye.html", http.StatusInternalServerError)
+		return
+	}
+
+	rows, errQuery2 := db.QueryContext(context.Background(), "SELECT * from employes")
+
+	if errQuery2 != nil {
+		http.Error(w, "Error with employes table", http.StatusInternalServerError)
+		return
+	}
+
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	var employesList []employes
+
+	for rows.Next() {
+		var employe employes
+		errScan := rows.Scan(&employe.IdEmployes, &employe.Name, &employe.Firstname, &employe.Birthdate, &employe.Mail, &employe.City, &employe.IdDepartement, &employe.IdPost, &employe.Salary)
+		if errScan != nil {
+			http.Error(w, "Error with employes table", http.StatusInternalServerError)
+			return
+		}
+		employe.Birthdate = employe.Birthdate[:10]
+
+		employesList = append(employesList, employe)
+	}
+
+	errExecute := tmpl.Execute(w, employesList)
+	if errExecute != nil {
+		log.Printf("Error executing template: %v", errExecute)
+		http.Error(w, "Error executing the HTML file : removeEmploye.html", http.StatusInternalServerError)
+		return
+	}
+}
+
+func AllEmployesHandler(w http.ResponseWriter, r *http.Request) {
 	db = OpenDb()
 
 	tmpl, errReading2 := template.ParseFiles("templates/allEmployes.html")
@@ -92,7 +134,6 @@ func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {
 	}
 
 	var employesList []employes
-
 
 	for rows.Next() {
 		var employe employes
@@ -115,7 +156,7 @@ func AllEmployesHandler (w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AddEmployeHandler (w http.ResponseWriter, r *http.Request) {
+func AddEmployeHandler(w http.ResponseWriter, r *http.Request) {
 	db = OpenDb()
 	tmpl, errReading3 := template.ParseFiles("templates/addEmploye.html")
 	if errReading3 != nil {
@@ -177,8 +218,6 @@ func AddEmployeHandler (w http.ResponseWriter, r *http.Request) {
 	addemployes.DepartementList = departementList
 	addemployes.PostList = postList
 
-
-
 	errExecute := tmpl.Execute(w, addemployes)
 	if errExecute != nil {
 		log.Printf("Error executing template: %v", errExecute)
@@ -187,7 +226,7 @@ func AddEmployeHandler (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SubmitEmployeHandler (w http.ResponseWriter, r *http.Request) {
+func SubmitEmployeHandler(w http.ResponseWriter, r *http.Request) {
 	db = OpenDb()
 	// Get the form values
 	if r.Method != http.MethodPost {
@@ -221,15 +260,9 @@ func SubmitEmployeHandler (w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
-
 	http.Redirect(w, r, "/addemploye", http.StatusSeeOther)
 }
 
+func EditEmployeHandler(w http.ResponseWriter, r *http.Request) {}
 
-func RemoveEmployeHandler (w http.ResponseWriter, r *http.Request) {}
-
-func EditEmployeHandler (w http.ResponseWriter, r *http.Request) {}
-
-func AllProjectsHandler (w http.ResponseWriter, r *http.Request) {}
-
+func AllProjectsHandler(w http.ResponseWriter, r *http.Request) {}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style/style.css">
+    <title>GYAT</title>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Accueil</a>
+        <a href="allemployes">Tout les employés</a>
+        <a href="addemploye">Ajouter un employé</a>
+        <a href="removeemploye">Supprimer un employé</a>
+        <a href="editemploye">Modifier un employé</a>
+        <a href="allprojects">Tout les projets</a>
+    </div>
+    <div class="employes-content">
+        <h1>Voici les employés de l'entreprise :</h1>
+        {{range .}}
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="../static/image/personne.png" alt="Employe">
+                    <h2>{{.Name}} {{.Firstname}}</h2>
+                </div>
+                <div class="card-back">
+                    <p>Nom : {{.Name}}</p>
+                    <p>Prénom : {{.Firstname}}</p>
+                    <p>Date de naissance : {{.Birthdate}}</p>
+                    <p>Email : {{.Mail}}</p>
+                    <p>Ville : {{.City}}</p>
+                    <p>ID Département : {{.IdDepartement}}</p>
+                    <p>ID Poste : {{.IdPost}}</p>
+                    <p>Id Employé : {{.IdEmployes}}</p>
+                    <p>Salaire : {{.Salary}}</p>
+                </div>
+            </div>
+        </div>
+        {{end}}
+    </div>
+    <script src="../static/JS/script.js"></script>
+</body>
+</html>
