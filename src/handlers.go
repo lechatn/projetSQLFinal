@@ -2,8 +2,8 @@ package sqlproject
 
 import (
 	"context"
-	"database/sql"
-		//"fmt"
+	"database/sql" //"fmt"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -44,6 +44,7 @@ type project struct {
 type employes_project struct {
 	IdEmployes string
 	IdProject string
+	MemberName string
 }
 
 type hierarchy struct {
@@ -56,6 +57,12 @@ type addEmploye struct {
 	PostList []post
 	EmployeList []employes
 	ProjectList []project
+}
+
+type allProjects struct {
+	ProjectList []project
+	Members []employes_project
+	Employes []employes
 }
 
 func HomeHandler (w http.ResponseWriter, r *http.Request) {
@@ -330,5 +337,178 @@ func RemoveEmployeHandler (w http.ResponseWriter, r *http.Request) {}
 
 func EditEmployeHandler (w http.ResponseWriter, r *http.Request) {}
 
-func AllProjectsHandler (w http.ResponseWriter, r *http.Request) {}
+func AllProjectsHandler (w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
 
+	tmpl, errReading2 := template.ParseFiles("templates/allProjects.html")
+	if errReading2 != nil {
+		http.Error(w, "Error reading the HTML file : allProjects.html", http.StatusInternalServerError)
+		return
+	}
+
+	rows, errQuery2 := db.QueryContext(context.Background(),
+		 `SELECT project.idProject, project.name, employes.name || ' ' || employes.firstname AS responsable
+		 FROM project
+		 JOIN employes ON project.responsable = employes.idEmployes
+		 `)
+
+	if errQuery2 != nil {
+		http.Error(w, "Error with project table", http.StatusInternalServerError)
+		log.Printf("Error with project table in query: %v", errQuery2)
+		return
+	}
+
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	var projectList []project
+
+	for rows.Next() {
+		var project project
+		errScan := rows.Scan(&project.IdProject, &project.Name, &project.Responsable)
+		if errScan != nil {
+			http.Error(w, "Error with project table", http.StatusInternalServerError)
+			log.Printf("Error scanning project table: %v", errScan)
+			return
+		}
+
+		projectList = append(projectList, project)
+
+	}
+
+
+	rows2, errQuery3 := db.QueryContext(context.Background(),
+	 `SELECT employes_project.*, employes.name || ' ' || employes.firstname AS member
+	 FROM employes_project
+	 JOIN employes ON employes_project.idEmployes = employes.idEmployes
+	 `)
+
+	if errQuery3 != nil {
+		http.Error(w, "Error with employes_project table", http.StatusInternalServerError)
+		log.Printf("Error with employes_project table in query: %v", errQuery3)
+		return
+	}
+
+	if rows2 != nil {
+		defer rows2.Close()
+	}
+
+	var membersList []employes_project
+
+	for rows2.Next() {
+		var member employes_project
+		errScan := rows2.Scan(&member.IdEmployes, &member.IdProject, &member.MemberName)
+		if errScan != nil {
+			http.Error(w, "Error with employes_project table", http.StatusInternalServerError)
+			log.Printf("Error scanning employes_project table: %v", errScan)
+			return
+
+		}
+
+		membersList = append(membersList, member)
+
+	}
+
+	rows3, errQuery4 := db.QueryContext(context.Background(), `SELECT name, firstname, idEmployes FROM employes`)
+
+	if errQuery4 != nil {
+		http.Error(w, "Error with employes table in query", http.StatusInternalServerError)
+		return
+	}
+
+	if rows3 != nil {
+		defer rows3.Close()
+	}
+
+	var employesList []employes
+
+	for rows3.Next() {
+		var employe employes
+		errScan := rows3.Scan(&employe.Name, &employe.Firstname, &employe.IdEmployes)
+		if errScan != nil {
+			http.Error(w, "Error with employes table", http.StatusInternalServerError)
+			return
+		}
+
+		employesList = append(employesList, employe)
+
+	}
+
+
+	var allprojects allProjects
+
+	allprojects.ProjectList = projectList
+	allprojects.Members = membersList
+	allprojects.Employes = employesList
+
+	errExecute := tmpl.Execute(w,allprojects)
+	if errExecute != nil {
+		log.Printf("Error executing template: %v", errExecute)
+		http.Error(w, "Error executing the HTML file : index.html", http.StatusInternalServerError)
+		return
+	}
+}	
+
+func AddProjectHandler (w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
+	// Get the form values
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	errParse := r.ParseForm()
+
+	if errParse != nil {
+		http.Error(w, "Error parsing the form", http.StatusInternalServerError)
+		return
+	}
+
+	name := r.FormValue("name")
+	responsable := r.FormValue("responsable")
+	members := r.Form["employes[]"]
+
+	fmt.Println(responsable)
+	fmt.Println(members)
+
+	_, errExec := db.ExecContext(context.Background(), "INSERT INTO project (name, responsable) VALUES (?, ?)", name, responsable)
+
+	if errExec != nil {
+		http.Error(w, "Error inserting into project table", http.StatusInternalServerError)
+		return
+	}
+
+	rows6, errQuery6 := db.QueryContext(context.Background(), `SELECT idProject FROM project WHERE name = ?`, name)
+
+	if errQuery6 != nil {
+		http.Error(w, "Error with project table in query", http.StatusInternalServerError)
+		return
+	}
+
+	if rows6 != nil {
+		defer rows6.Close()
+	}
+
+	var idProject string
+
+	for rows6.Next() {
+		errScan := rows6.Scan(&idProject)
+		if errScan != nil {
+			http.Error(w, "Error with project table", http.StatusInternalServerError)
+			return
+		}
+
+	}
+
+	for _, member := range members {
+		_, errExec2 := db.ExecContext(context.Background(), "INSERT INTO employes_project VALUES (?, ?)", member, idProject)
+
+		if errExec2 != nil {
+			http.Error(w, "Error inserting into employes_project table", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	http.Redirect(w, r, "/allprojects", http.StatusSeeOther)
+}

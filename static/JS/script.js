@@ -4,3 +4,12 @@ document.querySelectorAll('.card').forEach(card => {
   });
 });
 
+function Displayform() {
+  var formulaire = document.getElementById("form");
+  if (formulaire.style.display == "none") {
+    formulaire.style.display = "block";
+    document.getElementById("name").focus(); // Met le focus sur le premier champ du formulaire
+  } else {
+    formulaire.style.display = "none";
+  }  
+}

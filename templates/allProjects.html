@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style/style.css">
+    <title>GYAT</title>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Accueil</a>
+        <a href="allemployes">Tout les employés</a>
+        <a href="addemploye">Ajouter un employé</a>
+        <a href="removeemploye">Supprimer un employé</a>
+        <a href="editemploye">Modifier un employé</a>
+        <a href="allprojects">Tout les projets</a>
+    </div>
+    <div class="projects-content">
+        <h1>Voici les différents projets :</h1>
+        {{$Members := .Members}}
+        {{range .ProjectList}}
+        {{$projectId := .IdProject}}
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="../static/image/personne.png" alt="Employe">
+                    <h2>{{.Name}}</h2>
+                </div>
+                <div class="card-back">
+                    <h4>Chef de projet : {{.Responsable}}<h4>
+                    <h5>Membres du projet : </h5>
+                    {{range $Members}}
+                        {{if eq .IdProject $projectId}}
+                            <p>{{.MemberName}}</p>
+                        {{end}}
+                    {{end}}
+                </div>
+            </div>
+        </div>
+        {{end}}
+        <div class="card2" onclick="Displayform()">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="../static/image/plus.png" alt="plus">
+                    <h2>Add a new project</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="project-formulaire" id="form">
+        <form action="addproject" method="POST">
+            <label for="name">Nom du projet :</label>
+            <input type="text" id="name" name="name" required>
+            <label for="responsable">Chef de projet :</label>
+            <select id="responsable" name="responsable" required>
+                {{range .Employes}}
+                    <option value="{{.IdEmployes}}">{{.IdEmployes}}- {{.Name}} {{.Firstname}}</option>
+                {{end}}
+            </select>
+            <label for="employes">Membres du projet :</label>
+            <select id="employes" name="employes[]" multiple required>
+                {{range .Employes}}
+                    <option value="{{.IdEmployes}}">{{.IdEmployes}}- {{.Name}} {{.Firstname}}</option>
+                {{end}}
+            </select>
+            <input type="submit" value="Ajouter">
+        </form>
+    </div>
+    <script src="../static/JS/script.js"></script>
+</body>
+</html>
