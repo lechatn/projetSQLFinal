@@ -71,12 +71,12 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func RemoveEmployeHandler(w http.ResponseWriter, r *http.Request) {
+func ManageHandler(w http.ResponseWriter, r *http.Request) {
 	db = OpenDb()
 
-	tmpl, errReading2 := template.ParseFiles("templates/removeEmploye.html")
+	tmpl, errReading2 := template.ParseFiles("templates/manage.html")
 	if errReading2 != nil {
-		http.Error(w, "Error reading the HTML file : removeEmploye.html", http.StatusInternalServerError)
+		http.Error(w, "Error reading the HTML file : manage.html", http.StatusInternalServerError)
 		return
 	}
 
@@ -107,7 +107,7 @@ func RemoveEmployeHandler(w http.ResponseWriter, r *http.Request) {
 	errExecute := tmpl.Execute(w, employesList)
 	if errExecute != nil {
 		log.Printf("Error executing template: %v", errExecute)
-		http.Error(w, "Error executing the HTML file : removeEmploye.html", http.StatusInternalServerError)
+		http.Error(w, "Error executing the HTML file : manage.html", http.StatusInternalServerError)
 		return
 	}
 }
@@ -277,7 +277,7 @@ func RemoveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	IdEmployes := r.FormValue("id")
+	IdEmployes := r.FormValue("idremove")
 
 	_, errExec := db.ExecContext(context.Background(), "DELETE FROM employes WHERE idEmployes = ?", IdEmployes)
 	
@@ -286,7 +286,47 @@ func RemoveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/removeemploye", http.StatusSeeOther)
+	http.Redirect(w, r, "/manage", http.StatusSeeOther)
+
+}
+
+func EditHandler(w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
+	tmpl, errReading4 := template.ParseFiles("templat/edit.html")
+	if errReading4 != nil {
+		http.Error(w, "Error reading the HTML file : allEmployes.html", http.StatusInternalServerError)
+		return
+	}
+
+	errExecute := tmpl.Execute(w, nil)
+	if errExecute != nil {
+		log.Printf("Error executing template: %v", errExecute)
+		http.Error(w, "Error executing the HTML file : manage.html", http.StatusInternalServerError)
+		return
+	}
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	errParse := r.ParseForm()
+
+	if errParse != nil {
+		http.Error(w, "Error parsing the form", http.StatusInternalServerError)
+		return
+	}
+
+	IdEmployes := r.FormValue("idedit")
+
+	_, errExec := db.ExecContext(context.Background(), "DELETE FROM employes WHERE idEmployes = ?", IdEmployes)
+	
+	if errExec != nil {
+		http.Error(w, "Error deleting employe", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
 func EditEmployeHandler(w http.ResponseWriter, r *http.Request) {}

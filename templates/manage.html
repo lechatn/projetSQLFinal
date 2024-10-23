@@ -11,8 +11,7 @@
         <a href="/">Accueil</a>
         <a href="allemployes">Tout les employés</a>
         <a href="addemploye">Ajouter un employé</a>
-        <a href="removeemploye">Supprimer un employé</a>
-        <a href="editemploye">Modifier un employé</a>
+        <a href="manage">Gérer les employés</a>
         <a href="allprojects">Tout les projets</a>
     </div>
     <div class="employes-content">
@@ -27,9 +26,16 @@
                 <div class="card-back">
                     <p>Nom : {{.Name}}</p>
                     <p>Prénom : {{.Firstname}}</p>
+                    <br>
                     <form action="/remove" method="POST">
-                        <input type="hidden" name="id" value="{{.IdEmployes}}">
+                        <input type="hidden" name="idremove" value="{{.IdEmployes}}">
                         <button type="submit">Supprimer</button>
+                    </form>
+                    <br>
+                    <br>
+                    <form action="/edit" method="POST">
+                        <input type="hidden" name="idedit" value="{{.IdEmployes}}">
+                        <button type="submit">Modifier</button>
                     </form>
                 </div>
             </div>
