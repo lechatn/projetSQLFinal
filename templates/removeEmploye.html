@@ -16,7 +16,7 @@
         <a href="allprojects">Tout les projets</a>
     </div>
     <div class="employes-content">
-        <h1>Voici les employés de l'entreprise :</h1>
+        <h1>Choisisser un employé a supprimer :</h1>
         {{range .}}
         <div class="card">
             <div class="card-inner">
@@ -27,13 +27,10 @@
                 <div class="card-back">
                     <p>Nom : {{.Name}}</p>
                     <p>Prénom : {{.Firstname}}</p>
-                    <p>Date de naissance : {{.Birthdate}}</p>
-                    <p>Email : {{.Mail}}</p>
-                    <p>Ville : {{.City}}</p>
-                    <p>ID Département : {{.IdDepartement}}</p>
-                    <p>ID Poste : {{.IdPost}}</p>
-                    <p>Id Employé : {{.IdEmployes}}</p>
-                    <p>Salaire : {{.Salary}}</p>
+                    <form action="/remove" method="POST">
+                        <input type="hidden" name="id" value="{{.IdEmployes}}">
+                        <button type="submit">Supprimer</button>
+                    </form>
                 </div>
             </div>
         </div>

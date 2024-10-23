@@ -80,10 +80,10 @@ func RemoveEmployeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, errQuery2 := db.QueryContext(context.Background(), "SELECT * from employes")
+	rows, errQuery2 := db.QueryContext(context.Background(), "SELECT idEmployes,name,firstname FROM employes")
 
 	if errQuery2 != nil {
-		http.Error(w, "Error with employes table", http.StatusInternalServerError)
+		http.Error(w, "Error with employes table 1", http.StatusInternalServerError)
 		return
 	}
 
@@ -95,12 +95,11 @@ func RemoveEmployeHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var employe employes
-		errScan := rows.Scan(&employe.IdEmployes, &employe.Name, &employe.Firstname, &employe.Birthdate, &employe.Mail, &employe.City, &employe.IdDepartement, &employe.IdPost, &employe.Salary)
+		errScan := rows.Scan(&employe.IdEmployes, &employe.Name, &employe.Firstname)
 		if errScan != nil {
-			http.Error(w, "Error with employes table", http.StatusInternalServerError)
+			http.Error(w, "Error with employes table 2", http.StatusInternalServerError)
 			return
 		}
-		employe.Birthdate = employe.Birthdate[:10]
 
 		employesList = append(employesList, employe)
 	}
@@ -263,6 +262,33 @@ func SubmitEmployeHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/addemploye", http.StatusSeeOther)
 }
 
+func RemoveHandler(w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	errParse := r.ParseForm()
+
+	if errParse != nil {
+		http.Error(w, "Error parsing the form", http.StatusInternalServerError)
+		return
+	}
+
+	IdEmployes := r.FormValue("id")
+
+	_, errExec := db.ExecContext(context.Background(), "DELETE FROM employes WHERE idEmployes = ?", IdEmployes)
+	
+	if errExec != nil {
+		http.Error(w, "Error deleting employe", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/removeemploye", http.StatusSeeOther)
+
+}
 func EditEmployeHandler(w http.ResponseWriter, r *http.Request) {}
 
 func AllProjectsHandler(w http.ResponseWriter, r *http.Request) {}
