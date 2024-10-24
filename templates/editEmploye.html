@@ -52,6 +52,7 @@
             </select>
             <label for="salary">Salaire :</label>
             <input type="number" id="salary" name="salary" value="{{.Employe.Salary}}" required>
+            <input type="hidden" name="idemploye" value="{{.Employe.IdEmployes}}">
             <input type="submit" value="Modifier">
         </form> 
     </div>
