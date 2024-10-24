@@ -16,32 +16,42 @@
         <a href="allprojects">Tout les projets</a>
     </div>
     <div class="formulaire">
-        <form action="/submitemploye" method="POST">
+        <form action="/editemploye" method="POST">
             <label for="name">Nom :</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" value="{{.Employe.Name}}" required>
             <label for="firstname">Prénom :</label>
-            <input type="text" id="firstname" name="firstname" required>
+            <input type="text" id="firstname" name="firstname"value="{{.Employe.Firstname}}"  required>
             <label for="birthdate">Date de naissance :</label>
-            <input type="date" id="birthdate" name="birthdate" required>
+            <input type="date" id="birthdate" name="birthdate" value="{{.Employe.Birthdate}}" required>
             <label for="mail">Email :</label>
-            <input type="email" id="mail" name="mail" required>
+            <input type="email" id="mail" name="mail" value="{{.Employe.Mail}}" required>
             <label for="city">Ville :</label>
-            <input type="text" id="city" name="city" required>
+            <input type="text" id="city" name="city" value="{{.Employe.City}}" required>
             <label for="departement">Département :</label>
             <select id="departement" name="departement" required>
+                {{$departement := .Employe.IdDepartement}}
                 {{range .DepartementList}}
-                    <option value="{{.IdDepartement}}">{{.IdDepartement}}- {{.Name}}</option>
+                    {{if eq $departement .IdDepartement}}
+                        <option value="{{.IdDepartement}}" selected>{{.Name}}</option>
+                    {{else}}
+                        <option value="{{.IdDepartement}}">{{.Name}}</option>
+                    {{end}}
                 {{end}}
             </select>
             <label for="post">Poste :</label>
             <select id="post" name="post" required>
+                {{$post := .Employe.IdPost}}
                 {{range .PostList}}
-                    <option value="{{.IdPost}}">{{.IdPost}}- {{.Name}}</option>
+                    {{if eq $post .IdPost}}
+                        <option value="{{.IdPost}}" selected>{{.Name}}</option>
+                    {{else}}
+                        <option value="{{.IdPost}}">{{.Name}}</option>
+                    {{end}}
                 {{end}}
             </select>
             <label for="salary">Salaire :</label>
-            <input type="number" id="salary" name="salary" required>
-            <input type="submit" value="Ajouter">
+            <input type="number" id="salary" name="salary" value="{{.Employe.Salary}}" required>
+            <input type="submit" value="Modifier">
         </form> 
     </div>
 </body>

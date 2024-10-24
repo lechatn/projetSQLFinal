@@ -56,6 +56,13 @@ type addEmploye struct {
 	Sucess          bool
 }
 
+type editEmploye struct {
+	DepartementList []departement
+	PostList        []post
+	Employe         employes
+}
+
+
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, errReading1 := template.ParseFiles("templates/index.html")
 	if errReading1 != nil {
@@ -292,18 +299,6 @@ func RemoveHandler(w http.ResponseWriter, r *http.Request) {
 
 func EditHandler(w http.ResponseWriter, r *http.Request) {
 	db = OpenDb()
-	tmpl, errReading4 := template.ParseFiles("templat/edit.html")
-	if errReading4 != nil {
-		http.Error(w, "Error reading the HTML file : edit.html", http.StatusInternalServerError)
-		return
-	}
-
-	errExecute := tmpl.Execute(w, nil)
-	if errExecute != nil {
-		log.Printf("Error executing template: %v", errExecute)
-		http.Error(w, "Error executing the HTML file : manage.html", http.StatusInternalServerError)
-		return
-	}
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -319,16 +314,135 @@ func EditHandler(w http.ResponseWriter, r *http.Request) {
 
 	IdEmployes := r.FormValue("idedit")
 
-	_, errExec := db.ExecContext(context.Background(), "DELETE FROM employes WHERE idEmployes = ?", IdEmployes)
-	
-	if errExec != nil {
-		http.Error(w, "Error deleting employe", http.StatusInternalServerError)
+	rows, errQuery := db.QueryContext(context.Background(), "SELECT * from employes WHERE idEmployes = ?", IdEmployes)
+
+	if errQuery != nil {
+		http.Error(w, "Error with employes table", http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	var employe employes
+
+	for rows.Next() {
+		errScan := rows.Scan(&employe.IdEmployes, &employe.Name, &employe.Firstname, &employe.Birthdate, &employe.Mail, &employe.City, &employe.IdDepartement, &employe.IdPost, &employe.Salary)
+		if errScan != nil {
+			http.Error(w, "Error with employes table", http.StatusInternalServerError)
+			return
+		}
+
+		employe.Birthdate = employe.Birthdate[:10]
+	}
+
+	tmpl, errReading4 := template.ParseFiles("templates/editEmploye.html")
+
+	if errReading4 != nil {
+		http.Error(w, "Error reading the HTML file : editEmploye.html", http.StatusInternalServerError)
+		return
+	}
+
+	rows4, errQuery4 := db.QueryContext(context.Background(), "SELECT * from departement")
+	
+	if errQuery4 != nil {
+		http.Error(w, "Error with departement table in query", http.StatusInternalServerError)
+		return
+	}
+
+	if rows4 != nil {
+		defer rows4.Close()
+	}
+
+	var departementList []departement
+
+	for rows4.Next() {
+		var depart departement
+		errScan := rows4.Scan(&depart.IdDepartement, &depart.Name)
+		if errScan != nil {
+			http.Error(w, "Error with departement table", http.StatusInternalServerError)
+			return
+		}
+
+		departementList = append(departementList, depart)
+	}
+
+	rows5, errQuery5 := db.QueryContext(context.Background(), "SELECT * from post")
+
+	if errQuery5 != nil {
+		http.Error(w, "Error with post table in query", http.StatusInternalServerError)
+		return
+	}
+
+	if rows5 != nil {
+		defer rows5.Close()
+	}
+
+	var postList []post
+
+	for rows5.Next() {
+		var post post
+		errScan := rows5.Scan(&post.IdPost, &post.Name)
+		if errScan != nil {
+			http.Error(w, "Error with post table", http.StatusInternalServerError)
+			return
+		}
+
+		postList = append(postList, post)
+
+	}
+
+	var editemployes editEmploye
+
+	editemployes.DepartementList = departementList
+	editemployes.PostList = postList
+	editemployes.Employe = employe
+
+	errExecute := tmpl.Execute(w, editemployes)
+	if errExecute != nil {
+		log.Printf("Error executing template: %v", errExecute)
+		http.Error(w, "Error executing the HTML file : editEmploye.html", http.StatusInternalServerError)
+		return
+	}
 
 }
-func EditEmployeHandler(w http.ResponseWriter, r *http.Request) {}
+func EditEmployeHandler(w http.ResponseWriter, r *http.Request) {
+	db = OpenDb()
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	errParse := r.ParseForm()
+
+	if errParse != nil {
+		http.Error(w, "Error parsing the form", http.StatusInternalServerError)
+		return
+	}
+
+	IdEmployes := r.FormValue("idemploye")
+	name := r.FormValue("name")
+	firstname := r.FormValue("firstname")
+	birthdate := r.FormValue("birthdate")
+	mail := r.FormValue("mail")
+	city := r.FormValue("city")
+	idDepartement := r.FormValue("departement")
+	idPost := r.FormValue("post")
+	salary := r.FormValue("salary")
+
+	idPost = idPost[:1]
+	idDepartement = idDepartement[:1]
+
+	_, errExec := db.ExecContext(context.Background(), "UPDATE employes SET name = ?, firstname = ?, birthdate = ?, mail = ?, city = ?, idDepartement = ?, idPost = ?, salary = ? WHERE idEmployes = ?", name, firstname, birthdate, mail, city, idDepartement, idPost, salary, IdEmployes)
+
+	if errExec != nil {
+		http.Error(w, "Error updating employe", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/manage", http.StatusSeeOther)
+}
 
 func AllProjectsHandler(w http.ResponseWriter, r *http.Request) {}
