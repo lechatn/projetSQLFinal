@@ -13,3 +13,8 @@ function Displayform() {
     formulaire.style.display = "none";
   }  
 }
+
+function DisplayEdit() {
+  document.getElementsByClassName("employes-content").style.display = "none" 
+  document.getElementsByClassName("edit-form").style.display = "block"
+}

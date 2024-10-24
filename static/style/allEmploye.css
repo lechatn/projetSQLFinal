@@ -1,6 +1,8 @@
+/* Global Styles */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
 }
 
 /* Navbar Styles */
@@ -35,11 +37,12 @@ body {
     color: black;
 }
 
-/* Pour éviter que le contenu se cache sous la navbar */
+/* Avoid content being hidden under the navbar */
 .content {
-    padding-top: 100px;
+    padding-top: 120px;
 }
 
+/* Centered Image */
 .centered-image {
     display: block;
     margin-left: auto;
@@ -47,42 +50,46 @@ body {
     width: 50%; /* Adjust the width as needed */
 }
 
+/* Employes and Projects Grid */
 .employes-content, .projects-content {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 5%; /* Augmenter l'espace entre les cartes */
+    gap: 3%; /* Increase space between cards */
     justify-content: center;
     margin-top: 5%;
     margin-left: 2%;
 }
-/* Conteneur de la carte */
-.card, .card2{
+
+/* Card Container */
+.card, .card2 {
     width: 300px;
-    height: 300px;
+    height: 350px; /* Increased height for better content fit */
     margin-top: 20px;
+    perspective: 1000px; /* Adds 3D effect perspective */
 }
 
-.card-inner{
+/* Card Inner */
+.card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     transition: transform 0.6s;
     transform-style: preserve-3d;
     cursor: pointer;
-    transform-origin: center; /* Assure que la rotation se fait au centre de la carte */
+    transform-origin: center;
 }
 
-/* La classe flipped sera ajoutée via JavaScript */
-.card.flipped .card-inner{
-    transform: rotateY(180deg); /* Fait pivoter la carte lorsqu'elle est cliquée */
+/* Flipped card effect */
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
 }
 
-/* Faces avant et arrière de la carte */
+/* Card Faces */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden; /* Masque l'arrière lorsque la carte tourne */
+    backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -92,30 +99,68 @@ body {
     color: #333;
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 10px; /* Softer card edges */
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Ajoute un défilement vertical si nécessaire */
+    transition: transform 0.6s, box-shadow 0.3s;
+    overflow-y: auto;
 }
 
+.card-front:hover, .card-back:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Back of card rotates */
 .card-back {
     transform: rotateY(180deg);
-    overflow-y: auto; /* Garde le défilement */
+    overflow-y: auto;
     padding: 10px;
 }
 
-.formulaire{
+/* Content inside the card */
+.card-back-content {
+    overflow-y: auto;
+    max-height: 100%;
+    padding: 10px;
+}
+
+/* Card Image and Heading */
+.card-front img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Makes image circular */
+    margin-bottom: 10px;
+}
+
+.card-front h2 {
+    font-size: 18px;
+    color: #4CAF50; /* Add some accent color */
+    margin-top: 10px;
+}
+
+/* Form Styles */
+.formulaire {
     margin-top: 100px;
 }
 
-.project-formulaire{
+/* Project Form Styles */
+.project-formulaire {
     display: none;
     margin-top: 600px;
     margin-bottom: 100px;
 }
 
-.card-back-content {
-    overflow-y: auto;
-    max-height: 100%;
-    padding: 20px;
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .navbar a {
+        margin-left: 2%;
+        margin-right: 2%;
+        padding: 12px 15px;
+    }
+
+    .card, .card2 {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
