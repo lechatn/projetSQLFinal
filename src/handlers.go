@@ -294,7 +294,7 @@ func EditHandler(w http.ResponseWriter, r *http.Request) {
 	db = OpenDb()
 	tmpl, errReading4 := template.ParseFiles("templat/edit.html")
 	if errReading4 != nil {
-		http.Error(w, "Error reading the HTML file : allEmployes.html", http.StatusInternalServerError)
+		http.Error(w, "Error reading the HTML file : edit.html", http.StatusInternalServerError)
 		return
 	}
 
