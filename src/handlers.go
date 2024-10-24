@@ -45,11 +45,6 @@ type employes_project struct {
 	MemberName string
 }
 
-type hierarchy struct {
-	IdEmployes string
-	IdSuperior string
-}
-
 type addEmploye struct {
 	DepartementList []departement
 	PostList []post
