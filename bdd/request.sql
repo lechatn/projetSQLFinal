@@ -1,5 +1,6 @@
+--Creation of the table employes
 CREATE TABLE employes (
-    idEmployes INTEGER PRIMARY KEY AUTOINCREMENT, 
+    idEmployes INTEGER PRIMARY KEY AUTOINCREMENT,  -- Primary key
     name VARCHAR(30) NOT NULL,
     firstname VARCHAR(30) NOT NULL,
     birthdate DATE NOT NULL,
@@ -8,57 +9,57 @@ CREATE TABLE employes (
     idDepartement INTEGER NOT NULL,
     idPost INTEGER NOT NULL,
     salary INTEGER NOT NULL,
-    FOREIGN KEY (idDepartement) REFERENCES departement(idDepartement)
+    FOREIGN KEY (idDepartement) REFERENCES departement(idDepartement) -- Foreign key to the table departement
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (idPost) REFERENCES post(idPost)
+    FOREIGN KEY (idPost) REFERENCES post(idPost) -- Foreign key to the table post
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-
+-- Creation of the table departement
 CREATE TABLE departement (
-    idDepartement INTEGER PRIMARY KEY AUTOINCREMENT,
+    idDepartement INTEGER PRIMARY KEY AUTOINCREMENT, -- Primary key
     name VARCHAR(50) NOT NULL
 );
-
+-- Creation of the table post
 CREATE TABLE post (
-    idPost INTEGER PRIMARY KEY AUTOINCREMENT,
+    idPost INTEGER PRIMARY KEY AUTOINCREMENT, -- Primary key
     name VARCHAR(50) NOT NULL
 );
-
+-- Creation of the table project
 CREATE TABLE project (
-    idProject INTEGER PRIMARY KEY AUTOINCREMENT,
+    idProject INTEGER PRIMARY KEY AUTOINCREMENT, -- Primary key
     name VARCHAR(50) NOT NULL,
     responsable INTEGER,
-    FOREIGN KEY (responsable) REFERENCES employes(idEmployes)
+    FOREIGN KEY (responsable) REFERENCES employes(idEmployes) -- Foreign key to the table employes
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-
+-- Creation of the table employes_project
 CREATE TABLE employes_project (
     idEmployes INTEGER NOT NULL,
     idProject INTEGER NOT NULL,
-    PRIMARY KEY (idEmployes, idProject),
-    FOREIGN KEY (idEmployes) REFERENCES employes(idEmployes)
+    PRIMARY KEY (idEmployes, idProject), -- Primary key
+    FOREIGN KEY (idEmployes) REFERENCES employes(idEmployes) -- Foreign key to the table employes
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (idProject) REFERENCES project(idProject)
+    FOREIGN KEY (idProject) REFERENCES project(idProject) -- Foreign key to the table project
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
-
+-- Creation of the table hierarchy
 CREATE TABLE hierarchy (
     idEmployes INTEGER NOT NULL,
     idSuperior INTEGER NOT NULL,
-    PRIMARY KEY (idEmployes, idSuperior),
-    FOREIGN KEY (idEmployes) REFERENCES employes(idEmployes)
+    PRIMARY KEY (idEmployes, idSuperior), -- Primary key
+    FOREIGN KEY (idEmployes) REFERENCES employes(idEmployes) -- Foreign key to the table employes
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (idSuperior) REFERENCES employes(idEmployes)
-        ON DELETE CASCADE
+    FOREIGN KEY (idSuperior) REFERENCES employes(idEmployes) -- Foreign key to the table employes
+        ON DELETE CASCADE 
         ON UPDATE CASCADE
 );
-
+-- Insertion of the data in the table departement
 INSERT INTO departement (name) 
 VALUES 
 ('Informatique'), 
@@ -69,7 +70,7 @@ VALUES
 ('Support Client'), 
 ('Logistique'), 
 ('Recherche & Développement');
-
+-- Insertion of the data in the table post
 INSERT INTO post (name) 
 VALUES 
 ('Développeur'), 
@@ -82,7 +83,7 @@ VALUES
 ('Commercial'), 
 ('Chef de Projet'), 
 ('Consultant');
-
+-- Insertion of the data in the table employes
 INSERT INTO employes (name, firstname, birthdate, mail, city, idDepartement, idPost, salary) 
 VALUES 
 ('Dupont', 'Jean', '1985-05-12', 'jean.dupont@mail.com', 'Paris', 1, 1, 3000),
@@ -105,7 +106,7 @@ VALUES
 ('Bonnet', 'Charlotte', '1978-07-07', 'charlotte.bonnet@mail.com', 'Bordeaux', 7, 7, 3100),
 ('Dupre', 'Valentin', '1996-04-12', 'valentin.dupre@mail.com', 'Toulouse', 8, 8, 4300),
 ('Schmitt', 'Laura', '1997-11-20', 'laura.schmitt@mail.com', 'Paris', 1, 9, 4700);
-
+-- Insertion of the data in the table project
 INSERT INTO project (name, responsable) 
 VALUES 
 ('Projet Hangman', 1),
@@ -115,7 +116,7 @@ VALUES
 ('Projet SQL', 9),
 ('Projet Forum', 11),
 ('Projet JS', 13);
-
+-- Insertion of the data in the table employes_project
 INSERT INTO employes_project (idEmployes, idProject) 
 VALUES 
 (1, 1),
@@ -159,24 +160,24 @@ VALUES
 (20, 4),
 (20, 5);
 
-
+-- Insertion of the data in the table hierarchy
 INSERT INTO hierarchy (idEmployes, idSuperior) 
 VALUES
-(1, 8),  -- Jean Dupont (3000) -> Camille Gauthier (6000)
-(2, 17), -- Sophie Martin (4000) -> Mathieu Andre (5900)
-(3, 17), -- Luc Durand (3500) -> Mathieu Andre (5900)
-(4, 17), -- Claire Bernard (4200) -> Mathieu Andre (5900)
-(5, 8),  -- Pierre Lefevre (2500) -> Camille Gauthier (6000)
-(6, 8),  -- Juliette Moreau (3300) -> Camille Gauthier (6000)
-(7, 8),  -- Michel Roux (5000) -> Camille Gauthier (6000)
-(9, 8),  -- Marc Girard (2700) -> Camille Gauthier (6000)
-(10, 8), -- Nathalie Lopez (2900) -> Camille Gauthier (6000)
-(11, 17), -- Louis Muller (4500) -> Mathieu Andre (5900)
-(12, 8), -- Alice Fournier (3100) -> Camille Gauthier (6000)
-(13, 17), -- Paul Mercier (3800) -> Mathieu Andre (5900)
-(14, 8), -- Monique Blanc (3400) -> Camille Gauthier (6000)
-(15, 8), -- Hugo Dupuis (2700) -> Camille Gauthier (6000)
-(16, 17), -- Eva Faure (4800) -> Mathieu Andre (5900)
-(18, 8), -- Charlotte Bonnet (3100) -> Camille Gauthier (6000)
-(19, 17), -- Valentin Dupre (4300) -> Mathieu Andre (5900)
-(20, 17); -- Laura Schmitt (4700) -> Mathieu Andre (5900)
+(1, 8),
+(2, 17),
+(3, 17),
+(4, 17),
+(5, 8),
+(6, 8),
+(7, 8),
+(9, 8),
+(10, 8),
+(11, 17),
+(12, 8), 
+(13, 17), 
+(14, 8), 
+(15, 8), 
+(16, 17), 
+(18, 8), 
+(19, 17), 
+(20, 17);
