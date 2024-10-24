@@ -108,57 +108,75 @@ VALUES
 
 INSERT INTO project (name, responsable) 
 VALUES 
-('Projet Alpha', 1),
-('Projet Beta', 2),
-('Projet Gamma', 5),
-('Projet Delta', 6),
-('Projet Epsilon', 9),
-('Projet Zeta', 11),
-('Projet Eta', 13),
-('Projet Iota', 17),
-('Projet Kappa', 19);
+('Projet Hangman', 1),
+('Projet Groupie', 2),
+('Projet Java', 5),
+('Projet Python', 6),
+('Projet SQL', 9),
+('Projet Forum', 11),
+('Projet JS', 13);
 
 INSERT INTO employes_project (idEmployes, idProject) 
 VALUES 
-(1, 1), 
-(2, 1), 
-(3, 2), 
-(4, 2), 
-(5, 3), 
-(6, 3), 
-(7, 4), 
-(8, 4), 
-(9, 5), 
-(10, 5), 
-(11, 6), 
-(12, 6), 
-(13, 7), 
-(14, 7), 
-(15, 8), 
-(16, 8), 
-(17, 9), 
-(18, 9), 
-(19, 10), 
-(20, 10);
+(1, 1),
+(1, 2),
+(2, 3),
+(2, 4),
+(3, 5),
+(3, 6),
+(4, 7),
+(4, 1),
+(5, 2),
+(5, 3),
+(6, 4),
+(6, 5),
+(7, 6),
+(7, 7),
+(8, 1),
+(8, 2),
+(9, 3),
+(9, 4),
+(10, 5),
+(10, 6),
+(11, 7),
+(11, 1),
+(12, 2),
+(12, 3),
+(13, 4),
+(13, 5),
+(14, 6),
+(14, 7),
+(15, 1),
+(15, 2),
+(16, 3),
+(16, 4),
+(17, 5),
+(17, 6),
+(18, 7),
+(18, 1),
+(19, 2),
+(19, 3),
+(20, 4),
+(20, 5);
+
 
 INSERT INTO hierarchy (idEmployes, idSuperior) 
-VALUES 
-(2, 1), 
-(3, 1), 
-(4, 2), 
-(5, 3), 
-(6, 3), 
-(7, 4), 
-(8, 4), 
-(9, 5), 
-(10, 6), 
-(11, 7), 
-(12, 8), 
-(13, 9), 
-(14, 10), 
-(15, 11), 
-(16, 12), 
-(17, 13), 
-(18, 14), 
-(19, 15), 
-(20, 16);
+VALUES
+(1, 8),  -- Jean Dupont (3000) -> Camille Gauthier (6000)
+(2, 17), -- Sophie Martin (4000) -> Mathieu Andre (5900)
+(3, 17), -- Luc Durand (3500) -> Mathieu Andre (5900)
+(4, 17), -- Claire Bernard (4200) -> Mathieu Andre (5900)
+(5, 8),  -- Pierre Lefevre (2500) -> Camille Gauthier (6000)
+(6, 8),  -- Juliette Moreau (3300) -> Camille Gauthier (6000)
+(7, 8),  -- Michel Roux (5000) -> Camille Gauthier (6000)
+(9, 8),  -- Marc Girard (2700) -> Camille Gauthier (6000)
+(10, 8), -- Nathalie Lopez (2900) -> Camille Gauthier (6000)
+(11, 17), -- Louis Muller (4500) -> Mathieu Andre (5900)
+(12, 8), -- Alice Fournier (3100) -> Camille Gauthier (6000)
+(13, 17), -- Paul Mercier (3800) -> Mathieu Andre (5900)
+(14, 8), -- Monique Blanc (3400) -> Camille Gauthier (6000)
+(15, 8), -- Hugo Dupuis (2700) -> Camille Gauthier (6000)
+(16, 17), -- Eva Faure (4800) -> Mathieu Andre (5900)
+(18, 8), -- Charlotte Bonnet (3100) -> Camille Gauthier (6000)
+(19, 17), -- Valentin Dupre (4300) -> Mathieu Andre (5900)
+(20, 17); -- Laura Schmitt (4700) -> Mathieu Andre (5900)
