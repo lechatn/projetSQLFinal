@@ -2,7 +2,6 @@ package sqlproject
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 )
 
@@ -25,8 +24,6 @@ func AddProjectHandler (w http.ResponseWriter, r *http.Request) {
 	responsable := r.FormValue("responsable")
 	members := r.Form["employes[]"]
 
-	fmt.Println(responsable)
-	fmt.Println(members)
 	// Insert into project table the new project
 	_, errExec := db.ExecContext(context.Background(), "INSERT INTO project (name, responsable) VALUES (?, ?)", name, responsable)
 
